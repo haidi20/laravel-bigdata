@@ -1,0 +1,1 @@
+https://www.kaggle.com/datasets/jeegarmaru/us-campaign-finance-20192020-fec?select=Contributions+by+individuals.csv
