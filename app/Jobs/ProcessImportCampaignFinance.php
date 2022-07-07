@@ -33,13 +33,26 @@ class ProcessImportCampaignFinance implements ShouldQueue
      */
     public function handle()
     {
+        $import = [];
+
         $data = Excel::import(new CampaignFinanceImport, public_path('dataset.csv'));
 
         foreach ($data as $index => $item) {
-            CampaignFinance::create([
+            $import[$index]  = [
                 "CMTE_ID" => $item["CMTE_ID"],
-            ]);
+                "AMNDT_IND" => $item["AMNDT_IND"],
+                "RPT_TP" => $item["RPT_TP"],
+                "TRANSACTION_PGI" => $item["TRANSACTION_PGI"],
+                "IMAGE_NUM" => $item["IMAGE_NUM"],
+                "TRANSACTION_TP" => $item["TRANSACTION_TP"],
+                "ENTITY_TP" => $item["ENTITY_TP"],
+                "NAME" => $item["NAME"],
+                "CITY" => $item["CITY"],
+                "STATE" => $item["STATE"],
+            ];
         }
+
+        CampaignFinance::insert($import);
 
     }
 }

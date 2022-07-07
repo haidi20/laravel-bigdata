@@ -1,12 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Imports\CampaignFinanceImport;
-use App\Jobs\ProcessCampaignFinance;
 use App\Jobs\ProcessImportCampaignFinance;
-use App\Models\CampaignFinance;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class BigDataController extends Controller

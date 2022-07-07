@@ -14,9 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect("bigdata.index");
-});
-
-Route::resource('user', UserController::class);
 Route::resource('big-data', BigDataController::class);
