@@ -17,7 +17,6 @@ class CreateVouchersTable extends Migration
             $table->id();
             $table->integer("invoice_id");
             $table->string("code")->unique();
-            $table->string("name");
             $table->integer("value");
             $table->dateTime("expired_at")->nullable();
             $table->dateTime("used_at")->nullable();

@@ -72,7 +72,6 @@ class TenantController extends Controller
                     $voucher = new Voucher;
                     $voucher->invoice_id = $invoice->id;
                     $voucher->code = rand(pow(10, $digits-1), pow(10, $digits)-1);
-                    $voucher->name = "10.000";
                     $voucher->value = 10000;
                     $voucher->save();
                 }
@@ -87,7 +86,23 @@ class TenantController extends Controller
     }
 
     public function rendeemVoucher(){
-        return "rendeem voucher";
+        try {
+            if(request("invoice_id")) {
+                $voucher = Voucher::where("invoice_id", request("invoice_id"));
+
+                if($voucher->first()->expired_at) return response()->json(["data" => "voucher it was redeemed"], 200);
+
+                $voucher->update(["expired_at" => Carbon::now()->addMonths(3)]);
+
+                return response()->json(["data" => "rendeem voucher success"], 200);
+            }
+
+            return response()->json(["data" => "not found invoice id"]);
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return response()->json(["data" => $th]);
+        }
     }
 
     public function useVoucher(){
