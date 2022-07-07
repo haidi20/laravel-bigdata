@@ -21,3 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get("matrix", [MatrixController::class, 'index']);
+Route::post("register-customer", [TenantController::class, 'registerCustomer']);
+Route::post("paying-tenant", [TenantController::class, 'payingTenant']);
+Route::post("rendeem-voucher", [TenantController::class, 'rendeemVoucher']);
+Route::post("use-voucher", [TenantController::class, 'useVoucher']);
