@@ -77,36 +77,60 @@ class TenantController extends Controller
                 }
             }
 
-            return response()->json(["data" => "Paying tenant success"], 200);
+            return response()->json([ "data" => $invoice, "messsage" => "Paying tenant success"], 200);
         } catch (\Throwable $th) {
             //throw $th;
 
-            return response()->json(["data" => $th]);
+            return response()->json(["messsage" => $th]);
         }
     }
 
     public function rendeemVoucher(){
         try {
             if(request("invoice_id")) {
-                $voucher = Voucher::where("invoice_id", request("invoice_id"));
+                $invoiceId = request(("invoice_id"));
+                $vouchers = Voucher::whereHas("invoice", function($q) use($invoiceId){
+                    $q->where("code", $invoiceId);
+                });
 
-                if($voucher->first()->expired_at) return response()->json(["data" => "voucher it was redeemed"], 200);
+                if($vouchers->get()[0]->expired_at){
+                    return response()->json(["messsage" => "voucher it was redeemed"], 200);
+                }else {
+                    $vouchers->update(["expired_at" => Carbon::now()]);
+                }
 
-                $voucher->update(["expired_at" => Carbon::now()->addMonths(3)]);
 
-                return response()->json(["data" => "rendeem voucher success"], 200);
+                return response()->json(["data" => $vouchers->get(), "messsage" => "rendeem voucher success"], 200);
             }
 
-            return response()->json(["data" => "not found invoice id"]);
+            return response()->json(["messsage" => "not found invoice id"]);
         } catch (\Throwable $th) {
             //throw $th;
 
-            return response()->json(["data" => $th]);
+            return response()->json(["messsage" => $th]);
         }
     }
 
     public function useVoucher(){
-        return "use voucher";
+        try {
+            if(request("voucher_id")) {
+                $voucher = Voucher::where("code", request("voucher_id"));
+
+                if($voucher->first()->used_at) return response()->json(["messsage" => "voucher it was used"]);
+                if($voucher->first()->expired_at <= Carbon::now()) return response()->json(["messsage" => "voucher it was expired"]);
+
+
+                $voucher->update(["used_at" => Carbon::now()]);
+
+                return response()->json(["data" => $voucher->first(), "messsage" => "use voucher success"], 200);
+            }
+
+            return response()->json(["messsage" => "not found voucher id"]);
+        } catch (\Throwable $th) {
+            //throw $th;
+
+            return response()->json(["messsage" => $th]);
+        }
     }
 
 }
